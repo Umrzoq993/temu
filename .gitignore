@@ -1,0 +1,91 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media and Static
+media/
+staticfiles/
+
+# Virtual environment
+venv/
+env/
+ENV/
+.virtualenv/
+.venv/
+venv.bak/
+
+# IDE and editor configurations
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Python distribution/build files
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Pytest
+.cache/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Docker files
+*.dockerignore
+docker-compose.override.yml
+
+# Environment files
+.env
+.env.*
+*.env
+
+# Node.js (if you're using npm/yarn for frontend assets)
+node_modules/
+
+# Logs
+*.log
+
+# Miscellaneous
+*.bak
+*.tmp
+*.temp
+*.swp
+*~
+
+# Pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# PyCharm
+*.iml

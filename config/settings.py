@@ -91,8 +91,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mytemudb',             # Replace with your database name
         'USER': 'postgres',           # Replace with your database user
-        'PASSWORD': 'admin',   # Replace with your database password
-        'HOST': 'localhost',        # Or your database host
+        'PASSWORD': '568600',   # Replace with your database password
+        'HOST': '100.42.177.217',        # Or your database host
         'PORT': '5432',             # Default PostgreSQL port
     }
 }

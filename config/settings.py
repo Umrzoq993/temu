@@ -146,6 +146,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CSRF Settings
 CSRF_TRUSTED_ORIGINS = [
     "http://173.249.1.220",
+    "http://173.249.1.220:3000",
 ]
 
 SECURE_SSL_REDIRECT = False

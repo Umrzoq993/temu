@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-p4kytrsi@ixb5*7*p4dy6a7#+#rg)rkt%vf0&lo*+hw66nd6l@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.ngrok-free.app', '127.0.0.1', 'localhost', '.serveo.net']
+ALLOWED_HOSTS = ['.ngrok-free.app', '127.0.0.1', 'localhost', '173.249.1.220']
 
 # CORS Settings - Completely Disable CORS Restrictions
 CORS_ALLOW_ALL_ORIGINS = True  # Allows all domains (for development)
@@ -145,8 +145,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF Settings
 CSRF_TRUSTED_ORIGINS = [
-    "https://brightly-immortal-anemone.ngrok-free.app",
+    "http://173.249.1.220",
 ]
+
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # Content Security Policy (CSP) Settings
 CSP_DEFAULT_SRC = ("'self'",)
@@ -181,4 +185,4 @@ CSP_CONNECT_SRC = (
     "wss://*.serveo.net",
 )
 CSP_OBJECT_SRC = ("'none'",)
-CSP_UPGRADE_INSECURE_REQUESTS = True
+CSP_UPGRADE_INSECURE_REQUESTS = False

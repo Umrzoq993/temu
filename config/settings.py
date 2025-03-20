@@ -153,6 +153,7 @@ SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
+
 # Content Security Policy (CSP) Settings
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = (

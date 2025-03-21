@@ -7,7 +7,7 @@ from .views import (
     CourierCreateAPIView, MyTokenObtainPairView, CourierProductListView,
     ConfirmReceiptProductView, ConfirmDeliveredProductView,
     ProductDetailBySecretKeyView, UpdateProductLocationView,
-    MeView, StatsView
+    MeView, StatsView, UserViewSet
 )
 
 router = DefaultRouter()
@@ -15,6 +15,7 @@ router.register(r'couriers', CourierViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'cities', CityViewSet)
 router.register(r'regions', RegionViewSet)
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('couriers/create/', CourierCreateAPIView.as_view(), name='courier-create'),

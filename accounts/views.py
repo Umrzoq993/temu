@@ -31,6 +31,10 @@ from django.db.models.functions import TruncDay, TruncMonth
 
 User = get_user_model()
 
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 class MeView(APIView):
     """
     Returns the authenticated user's data.

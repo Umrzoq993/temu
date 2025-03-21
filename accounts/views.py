@@ -24,7 +24,7 @@ from .serializers import (
     ExcelUploadSerializer
 )
 from .permissions import IsAdminOrCourierBoss, IsAdmin, IsCourierBoss
-from .utils import get_or_create_normalized_city, import_products_from_excel, format_text
+from .utils import import_products_from_excel
 from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 

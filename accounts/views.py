@@ -1,6 +1,7 @@
 from rest_framework import status, generics, permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
 from rest_framework.parsers import MultiPartParser
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model, authenticate
@@ -164,8 +165,9 @@ class CourierViewSet(viewsets.ModelViewSet):
     serializer_class = CourierSerializer
     permission_classes = [IsAdminOrCourierBoss]
     pagination_class = StandardResultsSetPagination
+    search_fields = ['user__username', 'user__full_name', 'covered_cities__name']
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = CourierFilter
 
 
@@ -186,7 +188,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAdminOrCourierBoss]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['order_number', 'address', 'phone_number']
     filterset_class = ProductFilter  # Add this line to enable filtering
     pagination_class = StandardResultsSetPagination  # Only applies here
 

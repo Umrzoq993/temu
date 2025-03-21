@@ -7,7 +7,7 @@ from .views import (
     CourierCreateAPIView, MyTokenObtainPairView, CourierProductListView,
     ConfirmReceiptProductView, ConfirmDeliveredProductView,
     ProductDetailBySecretKeyView, UpdateProductLocationView,
-    MeView
+    MeView, StatsView
 )
 
 router = DefaultRouter()
@@ -30,4 +30,5 @@ urlpatterns = [
     path('product-by-secret/', ProductDetailBySecretKeyView.as_view(), name='product-by-secret'),
     path('update-location/', UpdateProductLocationView.as_view(), name='update-location'),
     path('me/', MeView.as_view(), name='me'),
+    path('stats/', StatsView.as_view(), name='stats'),
 ]

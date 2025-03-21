@@ -25,6 +25,9 @@ from .serializers import (
 )
 from .permissions import IsAdminOrCourierBoss, IsAdmin, IsCourierBoss
 from .utils import get_or_create_normalized_city, import_products_from_excel, format_text
+from django.db.models import Count
+from django.db.models.functions import TruncDay, TruncMonth
+
 
 User = get_user_model()
 
@@ -321,3 +324,134 @@ class UpdateProductLocationView(APIView):
 
         serializer = ProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StatsView(APIView):
+    """
+    Bazadagi `Product` modelidan statistika chiqarib,
+    React ApexCharts ga mos formatda qaytaradigan view.
+    """
+
+    def get(self, request, *args, **kwargs):
+
+        # 1) LINE CHART: so'nggi 7 kunlik yaratilgan buyurtmalar
+        #    Eslatma: real loyihada siz filtr ham qilishingiz mumkin (masalan, so'nggi 30 kun).
+        last_7_qs = (
+            Product.objects
+            .annotate(day=TruncDay('date'))
+            .values('day')
+            .annotate(count=Count('id'))
+            .order_by('day')
+        )
+        line_labels = []
+        line_data = []
+        for item in last_7_qs:
+            line_labels.append(item['day'].strftime('%Y-%m-%d'))
+            line_data.append(item['count'])
+
+        # 2) DONUT CHART: order_status bo'yicha
+        status_qs = (
+            Product.objects
+            .values('order_status')
+            .annotate(count=Count('id'))
+        )
+        donut_labels = []
+        donut_series = []
+        for item in status_qs:
+            donut_labels.append(item['order_status'] or "No Status")
+            donut_series.append(item['count'])
+
+        # 3) BAR CHART: region bo'yicha
+        region_qs = (
+            Product.objects
+            .values('region__name')
+            .annotate(count=Count('id'))
+            .order_by('region__name')
+        )
+        bar_labels = []
+        bar_data = []
+        for item in region_qs:
+            region_name = item['region__name'] or "None"
+            bar_labels.append(region_name)
+            bar_data.append(item['count'])
+
+        # 4) AREA CHART: Oyma-oy (yoki hafta, kun bo'yicha) "Pending" vs "Delivered" ni solishtirish
+        #    Buning uchun monthly_status degan aggregator qilamiz:
+        monthly_qs = (
+            Product.objects
+            .annotate(month=TruncMonth('date'))
+            .values('month', 'order_status')
+            .annotate(count=Count('id'))
+            .order_by('month')
+        )
+        # Keyin 2 ta ketma-ketlik:
+        #   1) "Pending"   -> array
+        #   2) "Delivered" -> array
+        # xaxis -> unique bo'lgan oylar
+        from collections import defaultdict
+
+        # Yordamchi dictionary: { '2025-01-01': {'Pending': 4, 'Delivered':2, ...}, ... }
+        monthly_data_map = defaultdict(lambda: defaultdict(int))
+
+        all_months_set = set()
+
+        for row in monthly_qs:
+            month_str = row['month'].strftime('%Y-%m')  # masalan '2025-03'
+            status = row['order_status'] or 'NoStatus'
+            count = row['count']
+            monthly_data_map[month_str][status] = count
+            all_months_set.add(month_str)
+
+        # Sort qilish uchun all_months_list
+        all_months_list = sorted(list(all_months_set))
+
+        # Masalan, 2 status chart qilamiz: "Pending" va "Delivered".
+        # Agar ko'proq status bo'lsa, xuddi shu usulda yoyish mumkin.
+        area_series = [
+            {
+                "name": "Pending",
+                "data": []
+            },
+            {
+                "name": "Delivered",
+                "data": []
+            }
+        ]
+
+        for m in all_months_list:
+            pending_count = monthly_data_map[m].get('Pending', 0)
+            delivered_count = monthly_data_map[m].get('Delivered', 0)
+            area_series[0]['data'].append(pending_count)
+            area_series[1]['data'].append(delivered_count)
+
+        # Endi bularni JSON formatda chart larning "labels" va "series" shaklida qaytaramiz
+        data = {
+            "line_chart": {
+                "labels": line_labels,
+                "series": [
+                    {
+                        "name": "Yaratilgan buyurtmalar",
+                        "data": line_data
+                    }
+                ]
+            },
+            "donut_chart": {
+                "labels": donut_labels,
+                "series": donut_series
+            },
+            "bar_chart": {
+                "labels": bar_labels,
+                "series": [
+                    {
+                        "name": "Region bo'yicha buyurtmalar",
+                        "data": bar_data
+                    }
+                ]
+            },
+            "area_chart": {
+                "labels": all_months_list,
+                "series": area_series
+            }
+        }
+
+        return Response(data)
